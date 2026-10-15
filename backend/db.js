@@ -4,7 +4,7 @@ const mysql = require('mysql2/promise');
 const TABLE_NAME = process.env.DB_TABLE || 'Raphiphat_6730202386';
 
 const poolConfig = {
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || '127.0.0.1',
   port: Number(process.env.DB_PORT) || 3306,
   user: process.env.DB_USER || 'ip_std6730202386',
   password: process.env.DB_PASSWORD || '',

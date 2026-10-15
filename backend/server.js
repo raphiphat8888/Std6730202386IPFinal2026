@@ -4,11 +4,14 @@ const cors = require('cors');
 const employeeStore = require('./employees');
 const { salaryClusters } = require('./clustering');
 const { authenticate } = require('./auth');
-const { isDbConnected } = require('./db');
+const { isDbConnected, getPool } = require('./db');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Initialize DB connection immediately
+getPool();
 
 const validateEmployee = (body) => {
   const name = String(body.name || '').trim();
@@ -20,7 +23,8 @@ const validateEmployee = (body) => {
   return null;
 };
 
-app.get('/api/health', (req, res) => {
+app.get('/api/health', async (req, res) => {
+  await getPool();
   res.json({
     success: true,
     dbConnected: isDbConnected(),
@@ -63,6 +67,19 @@ app.put('/api/employees/:id/status', async (req, res) => {
   try {
     const employee = await employeeStore.toggleStatus(req.params.id);
     return employee ? res.json(employee) : res.status(404).json({ success: false, message: 'Employee not found.' });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.put('/api/employees/:id', async (req, res) => {
+  const { name, position, salary, status } = req.body;
+  if (salary !== undefined && (!Number.isFinite(Number(salary)) || Number(salary) < 0)) {
+    return res.status(400).json({ success: false, message: 'Salary must be a non-negative number.' });
+  }
+  try {
+    const updated = await employeeStore.update(req.params.id, { name, position, salary, status });
+    return updated ? res.json(updated) : res.status(404).json({ success: false, message: 'Employee not found.' });
   } catch (err) {
     return res.status(500).json({ success: false, message: err.message });
   }

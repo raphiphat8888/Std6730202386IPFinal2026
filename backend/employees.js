@@ -68,6 +68,36 @@ module.exports = {
     return employee;
   },
 
+  update: async (id, { name, position, salary, status }) => {
+    const pool = await getPool();
+    if (pool) {
+      const updates = [];
+      const values = [];
+      if (name !== undefined) { updates.push('name = ?'); values.push(name.trim()); }
+      if (position !== undefined) { updates.push('position = ?'); values.push(position.trim()); }
+      if (salary !== undefined) { updates.push('salary = ?'); values.push(Number(salary)); }
+      if (status !== undefined) { updates.push('status = ?'); values.push(status); }
+      if (!updates.length) return null;
+      values.push(id);
+      await pool.query(`UPDATE \`${TABLE_NAME}\` SET ${updates.join(', ')} WHERE id = ?`, values);
+      const [rows] = await pool.query(`SELECT id, name, position, salary, status FROM \`${TABLE_NAME}\` WHERE id = ?`, [id]);
+      if (!rows.length) return null;
+      return {
+        id: String(rows[0].id),
+        name: rows[0].name,
+        position: rows[0].position,
+        salary: Number(rows[0].salary),
+        status: rows[0].status,
+      };
+    }
+    const emp = memoryEmployees.find((item) => item.id === String(id));
+    if (!emp) return null;
+    if (name !== undefined) emp.name = name.trim();
+    if (position !== undefined) emp.position = position.trim();
+    if (salary !== undefined) emp.salary = Number(salary);
+    if (status !== undefined) emp.status = status;
+    return emp;
+  },
   remove: async (id) => {
     const pool = await getPool();
     if (pool) {

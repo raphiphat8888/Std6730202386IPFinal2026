@@ -12,6 +12,7 @@ export const api = {
   employees: () => request('/employees'),
   createEmployee: (employee) => request('/employees', { method: 'POST', body: JSON.stringify(employee) }),
   toggleStatus: (id) => request(`/employees/${id}/status`, { method: 'PUT' }),
+  updateEmployee: (id, employee) => request(`/employees/${id}`, { method: 'PUT', body: JSON.stringify(employee) }),
   deleteEmployee: (id) => request(`/employees/${id}`, { method: 'DELETE' }),
   salaryClusters: () => request('/employees/salary-clusters'),
 };
