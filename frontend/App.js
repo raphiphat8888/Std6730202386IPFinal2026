@@ -296,11 +296,21 @@ export default function App() {
 
           {/* Table Header Row */}
           <View style={styles.thRow}>
-            <Text style={[styles.thText, { flex: 2 }]}>EMPLOYEE</Text>
-            <Text style={[styles.thText, { flex: 1.5 }]}>POSITION</Text>
-            <Text style={[styles.thText, { flex: 1.2 }]}>SALARY</Text>
-            <Text style={[styles.thText, { flex: 1 }]}>STATUS</Text>
-            <Text style={[styles.thText, { flex: 1.5, textAlign: 'right' }]}>ACTIONS</Text>
+            <View style={styles.colEmp}>
+              <Text style={styles.thText}>EMPLOYEE</Text>
+            </View>
+            <View style={styles.colPos}>
+              <Text style={styles.thText}>POSITION</Text>
+            </View>
+            <View style={styles.colSal}>
+              <Text style={styles.thText}>SALARY</Text>
+            </View>
+            <View style={styles.colStatus}>
+              <Text style={styles.thText}>STATUS</Text>
+            </View>
+            <View style={styles.colActions}>
+              <Text style={[styles.thText, { textAlign: 'right', width: '100%', paddingRight: 6 }]}>ACTIONS</Text>
+            </View>
           </View>
 
           {/* Table Body */}
@@ -314,28 +324,28 @@ export default function App() {
             filtered.map((emp) => (
               <View key={emp.id} style={styles.trRow}>
                 {/* Employee Info */}
-                <View style={[styles.tdCol, { flex: 2, flexDirection: 'row', alignItems: 'center' }]}>
+                <View style={styles.colEmp}>
                   <View style={styles.userAvatar}>
                     <Text style={styles.avatarInitial}>{(emp.name || 'E')[0].toUpperCase()}</Text>
                   </View>
-                  <View>
-                    <Text style={styles.empNameText}>{emp.name}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.empNameText} numberOfLines={1}>{emp.name}</Text>
                     <Text style={styles.empIdText}>ID: #{emp.id}</Text>
                   </View>
                 </View>
 
                 {/* Position */}
-                <View style={[styles.tdCol, { flex: 1.5 }]}>
-                  <Text style={styles.positionText}>{emp.position}</Text>
+                <View style={styles.colPos}>
+                  <Text style={styles.positionText} numberOfLines={1}>{emp.position}</Text>
                 </View>
 
                 {/* Salary */}
-                <View style={[styles.tdCol, { flex: 1.2 }]}>
+                <View style={styles.colSal}>
                   <Text style={styles.salaryText}>{money(emp.salary)}</Text>
                 </View>
 
                 {/* Status Toggle */}
-                <View style={[styles.tdCol, { flex: 1 }]}>
+                <View style={styles.colStatus}>
                   <Pressable
                     style={[
                       styles.statusPill,
@@ -361,7 +371,7 @@ export default function App() {
                 </View>
 
                 {/* Action Buttons: Edit & Delete */}
-                <View style={[styles.tdCol, { flex: 1.5, flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }]}>
+                <View style={styles.colActions}>
                   <Pressable style={styles.actionBtnEdit} onPress={() => openEdit(emp)}>
                     <Text style={styles.actionBtnEditText}>Edit</Text>
                   </Pressable>
@@ -768,13 +778,14 @@ const styles = StyleSheet.create({
   sectionSubtitle: { color: c.textSecondary, fontSize: 12, marginTop: 2 },
   thRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 12,
-    backgroundColor: c.surfaceAlt,
+    backgroundColor: '#1E293B',
     borderBottomWidth: 1,
     borderBottomColor: c.border,
   },
-  thText: { color: c.textMuted, fontSize: 10, fontWeight: '700', letterSpacing: 0.8 },
+  thText: { color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.8 },
   trRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -783,15 +794,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: c.border,
   },
-  tdCol: { justifyContent: 'center' },
+  colEmp: { width: '28%', flexDirection: 'row', alignItems: 'center' },
+  colPos: { width: '22%', justifyContent: 'center' },
+  colSal: { width: '18%', justifyContent: 'center' },
+  colStatus: { width: '16%', justifyContent: 'center' },
+  colActions: { width: '16%', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 8 },
   userAvatar: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: '#374151',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#334155',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    borderWidth: 1,
+    borderColor: '#475569',
   },
   avatarInitial: { color: '#E0E7FF', fontSize: 14, fontWeight: '700' },
   empNameText: { color: c.text, fontSize: 14, fontWeight: '700' },
@@ -804,10 +821,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 11,
+    paddingVertical: 5,
     borderRadius: 12,
     alignSelf: 'flex-start',
+    cursor: 'pointer',
   },
   statusActive: { backgroundColor: '#064E3B' },
   statusLeave: { backgroundColor: '#78350F' },
@@ -816,23 +834,25 @@ const styles = StyleSheet.create({
 
   // Action Buttons
   actionBtnEdit: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: c.surfaceAlt,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 8,
+    backgroundColor: '#1E293B',
     borderWidth: 1,
-    borderColor: c.borderLight,
+    borderColor: '#3B82F6',
+    cursor: 'pointer',
   },
-  actionBtnEditText: { color: '#818CF8', fontSize: 12, fontWeight: '600' },
+  actionBtnEditText: { color: '#60A5FA', fontSize: 12, fontWeight: '700' },
   actionBtnDelete: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#3F171A',
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 8,
+    backgroundColor: '#2A171A',
     borderWidth: 1,
-    borderColor: '#7F1D1D',
+    borderColor: '#991B1B',
+    cursor: 'pointer',
   },
-  actionBtnDeleteText: { color: '#F87171', fontSize: 12, fontWeight: '600' },
+  actionBtnDeleteText: { color: '#F87171', fontSize: 12, fontWeight: '700' },
 
   emptyTable: { padding: 40, alignItems: 'center' },
   emptyText: { color: c.textMuted, fontSize: 14 },
